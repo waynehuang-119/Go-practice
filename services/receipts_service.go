@@ -2,7 +2,7 @@ package services
 
 import (
 	"fmt"
-	"go-practice/models"
+	model "go-practice/models"
 	"go-practice/storage"
 	"math"
 	"regexp"
@@ -13,11 +13,40 @@ import (
 )
 
 // Stores a receipt, generates an ID, and returns the ID.
-func ProcessReceipt(receipt models.Receipt) string {
-	receiptData := storage.ReceiptData{Receipt: receipt, Point: 0}
-	id := uuid.New().String()
+func ProcessReceipt(extReceipt model.ExtReceipt) (string, error) {
+	var id string
+
+	// Generate unique ID
+	for {
+		id = uuid.New().String()
+
+		// Check if the ID exists in storage
+		if _, exists := storage.Receipts[id]; !exists {
+			break // ID is unique, exit the loop
+		}
+	}
+
+	// Convert external receipt to internal receipt
+	var items []model.Item
+	for _, extItem := range extReceipt.Items {
+		items = append(items, model.Item{
+			ShortDescription: extItem.ShortDescription,
+			Price:            extItem.Price,
+		})
+	}
+
+	internalReceipt := model.Receipt{
+		ID:           id,
+		Retailer:     extReceipt.Retailer,
+		PurchaseDate: extReceipt.PurchaseDate,
+		PurchaseTime: extReceipt.PurchaseTime,
+		Items:        items,
+		Total:        extReceipt.Total,
+	}
+
+	receiptData := storage.ReceiptData{Receipt: internalReceipt, Point: 0}
 	storage.UpdateReceiptData(id, receiptData)
-	return id
+	return id, nil
 }
 
 // Get points for a given receipt ID, calculating them if 0.
@@ -37,7 +66,7 @@ func GetPoints(id string) (int64, error) {
 }
 
 // Calculates points for a given receipt.
-func calculatePoints(receipt models.Receipt) int64 {
+func calculatePoints(receipt model.Receipt) int64 {
 	var points int64
 
 	// Rule 1: 1 point for every alphanumeric character in the retailer name.
@@ -45,7 +74,11 @@ func calculatePoints(receipt models.Receipt) int64 {
 	points += int64(len(retailerRegex.FindAllString(receipt.Retailer, -1)))
 
 	// Rule 2: 50 points if the total is a round dollar amount.
-	total, _ := strconv.ParseFloat(receipt.Total, 64)
+	total, err := strconv.ParseFloat(receipt.Total, 64)
+	if err != nil {
+		// Handle error, e.g., return 0 points if total is invalid
+		return points
+	}
 	if total == float64(int(total)) {
 		points += 50
 	}
@@ -62,20 +95,22 @@ func calculatePoints(receipt models.Receipt) int64 {
 	for _, item := range receipt.Items {
 		trimmedDescription := strings.TrimSpace(item.ShortDescription)
 		if len(trimmedDescription)%3 == 0 {
-			price, _ := strconv.ParseFloat(item.Price, 64)
-			points += int64((price * 0.2) + 0.5) // Round up
+			price, err := strconv.ParseFloat(item.Price, 64)
+			if err == nil {
+				points += int64((price * 0.2) + 0.5) // Round up
+			}
 		}
 	}
 
 	// Rule 6: 6 points if the day in the purchase date is odd.
-	day, _ := strconv.Atoi(strings.Split(receipt.PurchaseDate, "-")[2])
-	if day%2 != 0 {
+	day, err := strconv.Atoi(strings.Split(receipt.PurchaseDate, "-")[2])
+	if err == nil && day%2 != 0 {
 		points += 6
 	}
 
 	// Rule 7: 10 points if the purchase time is between 2:00 PM and 4:00 PM.
-	hour, _ := strconv.Atoi(strings.Split(receipt.PurchaseTime, ":")[0])
-	if hour >= 14 && hour < 16 {
+	hour, err := strconv.Atoi(strings.Split(receipt.PurchaseTime, ":")[0])
+	if err == nil && hour >= 14 && hour < 16 {
 		points += 10
 	}
 

@@ -2,12 +2,12 @@
 package storage
 
 import (
-	"go-practice/models"
+	model "go-practice/models"
 	"sync"
 )
 
 type ReceiptData struct {
-	Receipt models.Receipt
+	Receipt model.Receipt
 	Point   int64
 }
 

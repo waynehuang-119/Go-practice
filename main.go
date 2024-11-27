@@ -5,8 +5,8 @@ package main
 
 import (
 	"fmt"
+	"go-practice/public/v1/routes"
 	"net/http"
-	"receipt-processor/api"
 
 	"github.com/gorilla/mux"
 )
@@ -15,7 +15,7 @@ func main() {
 	router := mux.NewRouter()
 
 	// Set up routes
-	api.SetupRouter(router)
+	routes.Register(router)
 
 	fmt.Println("Server is running on port 8080...")
 	err := http.ListenAndServe(":8080", router)
