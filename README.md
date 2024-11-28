@@ -12,13 +12,19 @@ This is a backend service written in Go which processes receipt awards points. I
 ## Build and Run
 ### 1. Clone this repo and navigate to the root directory
 ### 2. Download dependencies
-`go mod download`
+```bash
+go mod download
+```
 
 ### 3. Build the application
-`go build -o main`
+```bash
+go build -o main
+```
 
 ### 4. Run the application
-`./main`
+```bash
+./main
+```
 
 ### 5. Access the Application
 Once the application is running, you can access it at http://localhost:8080
