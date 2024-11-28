@@ -50,9 +50,11 @@ Once the docker container is running, you can access it at http://localhost:8080
 
 ---
 ## Unit Tests
-There are one unit test for services that can be run by sending the following command in your project terminal.
+There is one unit test for services that can be run by sending the following command in your project terminal.
 
-`go test ./services`
+```bash
+go test ./services
+```
 
 ---
 ## API Documentation
