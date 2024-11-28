@@ -11,7 +11,7 @@ This is a backend service written in Go which processes receipt awards points. I
 ---
 ## Build and Run
 ### Using Go
-0. Make sure you have **Go** installed on your machine.
+0. Make sure you have [Go](https://go.dev/) installed on your machine.
 1. Clone this repo to your local machine and navigate to the root directory.
 2. Download dependencies.
 ```bash
@@ -32,7 +32,7 @@ go build -o main
 Once the application is running, you can access it at http://localhost:8080
 
 ### Using Docker
-0. Make sure you have **Docker** installed on your machine.
+0. Make sure you have [Docker](https://www.docker.com/) installed on your machine.
 1. Clone this repo to your local machine and navigate to the root directory.
 2. Build the Docker image.
 ```bash
