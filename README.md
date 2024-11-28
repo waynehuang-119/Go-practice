@@ -1,7 +1,7 @@
 # Receipt Processor
 
 ## Introduction
-This is a coding challenge from Fetch-Rewards. See the requirements from here: https://github.com/fetch-rewards/receipt-processor-challenge.
+This is a coding challenge from [Fetch-Rewards](https://fetch.com/). See the requirements from here: https://github.com/fetch-rewards/receipt-processor-challenge.
 
 ## Overview
 This is a backend service written in Go which processes receipt awards points. It provides two API endpoints:
