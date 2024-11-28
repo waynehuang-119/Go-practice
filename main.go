@@ -5,8 +5,8 @@ package main
 
 import (
 	"fmt"
-	"go-practice/public/v1/routes"
 	"net/http"
+	"receipt-processor/public/v1/routes"
 
 	"github.com/gorilla/mux"
 )

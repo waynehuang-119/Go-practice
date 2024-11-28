@@ -1,8 +1,8 @@
 package routes
 
 import (
-	"go-practice/public/v1/controllers"
 	"net/http"
+	"receipt-processor/public/v1/controllers"
 
 	"github.com/gorilla/mux"
 )

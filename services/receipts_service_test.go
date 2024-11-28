@@ -1,8 +1,8 @@
 package services
 
 import (
-	"go-practice/models"
-	"go-practice/storage"
+	"receipt-processor/models"
+	"receipt-processor/storage"
 	"testing"
 
 	"github.com/google/uuid"

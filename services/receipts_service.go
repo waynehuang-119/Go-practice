@@ -2,9 +2,9 @@ package services
 
 import (
 	"fmt"
-	model "go-practice/models"
-	"go-practice/storage"
 	"math"
+	"receipt-processor/models"
+	"receipt-processor/storage"
 	"regexp"
 	"strconv"
 	"strings"
@@ -13,7 +13,7 @@ import (
 )
 
 // Stores a receipt, generates an ID, and returns the ID.
-func ProcessReceipt(extReceipt model.ExtReceipt) (string, error) {
+func ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
 	var id string
 
 	// Generate unique ID
@@ -27,15 +27,15 @@ func ProcessReceipt(extReceipt model.ExtReceipt) (string, error) {
 	}
 
 	// Convert external receipt to internal receipt
-	var items []model.Item
+	var items []models.Item
 	for _, extItem := range extReceipt.Items {
-		items = append(items, model.Item{
+		items = append(items, models.Item{
 			ShortDescription: extItem.ShortDescription,
 			Price:            extItem.Price,
 		})
 	}
 
-	internalReceipt := model.Receipt{
+	internalReceipt := models.Receipt{
 		ID:           id,
 		Retailer:     extReceipt.Retailer,
 		PurchaseDate: extReceipt.PurchaseDate,
@@ -66,7 +66,7 @@ func GetPoints(id string) (int64, error) {
 }
 
 // Calculates points for a given receipt.
-func calculatePoints(receipt model.Receipt) int64 {
+func calculatePoints(receipt models.Receipt) int64 {
 	var points int64
 
 	// Rule 1: One point for every alphanumeric character in the retailer name.

@@ -1,4 +1,4 @@
-module go-practice
+module receipt-processor
 
 go 1.22.5
 

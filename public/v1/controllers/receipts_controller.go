@@ -2,9 +2,9 @@ package controllers
 
 import (
 	"encoding/json"
-	"go-practice/models"
-	"go-practice/services"
 	"net/http"
+	"receipt-processor/models"
+	"receipt-processor/services"
 
 	"github.com/gorilla/mux"
 )
