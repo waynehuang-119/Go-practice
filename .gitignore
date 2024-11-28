@@ -1,4 +1,19 @@
+# Binaries for programs and plugins
+*.exe
+*.dll
+*.so
+*.dylib
+
+# Output directories
 /bin/
 /pkg/
-*.exe
+
+# Logs and temporary files
 *.log
+*.tmp
+*.out
+
+# IDE and editor settings
+.idea/
+.vscode/
+*.swp
