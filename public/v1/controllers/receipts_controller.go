@@ -1,8 +1,8 @@
-package receipts_controllers
+package controllers
 
 import (
 	"encoding/json"
-	model "go-practice/models"
+	"go-practice/models"
 	"go-practice/services"
 	"net/http"
 
@@ -10,7 +10,7 @@ import (
 )
 
 func ProcessReceiptController(w http.ResponseWriter, r *http.Request) {
-	var extReceipt model.ExtReceipt
+	var extReceipt models.ExtReceipt
 
 	err := json.NewDecoder(r.Body).Decode(&extReceipt)
 	if err != nil {

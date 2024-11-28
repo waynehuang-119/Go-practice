@@ -1,7 +1,7 @@
 package services
 
 import (
-	model "go-practice/models"
+	"go-practice/models"
 	"go-practice/storage"
 	"testing"
 
@@ -11,7 +11,7 @@ import (
 
 type ReceiptServiceTestSuite struct {
 	suite.Suite
-	mockExtReceipt model.ExtReceipt // Change from model.Receipt to model.ExtReceipt
+	mockExtReceipt models.ExtReceipt
 }
 
 func (suite *ReceiptServiceTestSuite) SetupTest() {
@@ -19,11 +19,11 @@ func (suite *ReceiptServiceTestSuite) SetupTest() {
 	storage.Receipts = make(map[string]storage.ReceiptData)
 
 	// Define a mock external receipt (ExtReceipt)
-	suite.mockExtReceipt = model.ExtReceipt{
+	suite.mockExtReceipt = models.ExtReceipt{
 		Retailer:     "Target",
 		PurchaseDate: "2022-01-01",
 		PurchaseTime: "13:01",
-		Items: []model.Item{
+		Items: []models.Item{
 			{ShortDescription: "Mountain Dew 12PK", Price: "6.49"},
 			{ShortDescription: "Emils Cheese Pizza", Price: "12.25"},
 			{ShortDescription: "Knorr Creamy Chicken", Price: "1.26"},

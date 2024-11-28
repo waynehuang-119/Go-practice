@@ -1,4 +1,4 @@
-package receipts_controllers
+package controllers
 
 type ExtProcessReceiptResponse struct {
 	ID string `json:"id"`
