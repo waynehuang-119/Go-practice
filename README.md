@@ -10,25 +10,39 @@ This is a backend service written in Go which processes receipt awards points. I
 
 ---
 ## Build and Run
-### 1. Clone this repo and navigate to the root directory
-### 2. Download dependencies
+### Using Go
+0. Make sure you have **Go** installed on your machine.
+1. Clone this repo to your local machine and navigate to the root directory.
+2. Download dependencies.
 ```bash
 go mod download
 ```
 
-### 3. Build the application
+3. Build the application.
 ```bash
 go build -o main
 ```
 
-### 4. Run the application
+4. Run the application.
 ```bash
 ./main
 ```
 
-### 5. Access the Application
+5. Access the Application.
 Once the application is running, you can access it at http://localhost:8080
 
+### Using Docker
+0. Make sure you have **Docker** installed on your machine.
+1. Clone this repo to your local machine and navigate to the root directory.
+2. Build the Docker image.
+```bash
+docker build -t reciept-processor .
+```
+
+3. Run the Docker container.
+```bash
+docker run -p 8080:8080 receipt-processor
+```
 
 
 ---
