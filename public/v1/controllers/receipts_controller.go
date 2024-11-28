@@ -36,7 +36,7 @@ func GetPointsController(w http.ResponseWriter, r *http.Request) {
 
 	points, err := services.GetPoints(id)
 	if err != nil {
-		http.Error(w, "Error getting points", http.StatusInternalServerError)
+		http.Error(w, "Receipt not found", http.StatusNotFound)
 		return
 	}
 

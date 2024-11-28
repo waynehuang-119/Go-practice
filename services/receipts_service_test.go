@@ -55,7 +55,7 @@ func (suite *ReceiptServiceTestSuite) TestGetPoints() {
 	// Verify points calculation
 	suite.Require().NoError(err, "GetPoints should not return an error")
 	suite.Require().Greater(points, int64(0), "Points should be greater than 0")
-	// suite.Require().Equal(points, int64(28), "Points of this mock receipt should be 28")
+	suite.Require().Equal(points, int64(28), "Points of this mock receipt should be 28")
 
 	// Verify that points are updated in storage
 	storedData, exists := storage.GetReceiptData(id)
