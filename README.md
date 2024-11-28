@@ -44,6 +44,8 @@ docker build -t reciept-processor .
 ```bash
 docker run -p 8080:8080 receipt-processor
 ```
+4. Access the Application.
+Once the docker container is running, you can access it at http://localhost:8080
 
 
 ---
