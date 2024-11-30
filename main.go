@@ -5,21 +5,22 @@ package main
 
 import (
 	"fmt"
-	"net/http"
-	"receipt-processor/public/v1/routes"
+	receipt_handler "receipt-processor/public/v1/receipt_handler"
 
-	"github.com/gorilla/mux"
+	"github.com/gin-gonic/gin"
 )
 
 func main() {
-	router := mux.NewRouter()
+	// Create a Gin router
+	router := gin.Default()
 
 	// Set up routes
-	routes.Register(router)
+	receipt_handler.Register(router)
 
-	fmt.Println("Server is running on port 8080...")
-	err := http.ListenAndServe(":8080", router)
-	if err != nil {
+	// Start the server
+	port := ":8080"
+	fmt.Printf("Server is running on port %s...\n", port)
+	if err := router.Run(port); err != nil {
 		panic(err)
 	}
 }
