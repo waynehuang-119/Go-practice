@@ -21,6 +21,6 @@ type Receipt struct {
 
 // A single item purchased in a receipt
 type Item struct {
-	ShortDescription string
-	Price            string
+	ShortDescription string `json:"shortDescription"`
+	Price            string `json:"price"`
 }

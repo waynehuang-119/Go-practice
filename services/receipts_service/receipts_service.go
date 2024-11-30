@@ -12,8 +12,19 @@ import (
 	"github.com/google/uuid"
 )
 
+type ReceiptService interface {
+	ProcessReceipt(extReceipt models.ExtReceipt) (string, error)
+	GetPoints(id string) (int64, error)
+}
+
+type receiptServiceImpl struct{}
+
+func NewReceiptService() ReceiptService {
+	return &receiptServiceImpl{}
+}
+
 // Stores a receipt, generates an ID, process points and returns the ID
-func ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
+func (r *receiptServiceImpl) ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
 	var id string
 
 	// Generate unique ID
@@ -52,7 +63,7 @@ func ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
 }
 
 // Get points for a given receipt ID, calculating them if 0
-func GetPoints(id string) (int64, error) {
+func (r *receiptServiceImpl) GetPoints(id string) (int64, error) {
 	receiptData, exists := storage.GetReceiptData(id)
 	if !exists {
 		return 0, fmt.Errorf("receipt with id %s does not exist", id)

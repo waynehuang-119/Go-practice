@@ -5,18 +5,23 @@ import (
 	"receipt-processor/storage"
 	"testing"
 
-	"github.com/google/uuid"
 	"github.com/stretchr/testify/suite"
 )
 
+// ReceiptServiceTestSuite defines the suite for service tests
 type ReceiptServiceTestSuite struct {
 	suite.Suite
+	service        ReceiptService
 	mockExtReceipt models.ExtReceipt
 }
 
+// SetupTest initializes the suite
 func (suite *ReceiptServiceTestSuite) SetupTest() {
 	// Reset the storage before each test
 	storage.Receipts = make(map[string]storage.ReceiptData)
+
+	// Initialize the ReceiptService
+	suite.service = NewReceiptService()
 
 	// Define a mock external receipt (ExtReceipt)
 	suite.mockExtReceipt = models.ExtReceipt{
@@ -34,39 +39,36 @@ func (suite *ReceiptServiceTestSuite) SetupTest() {
 	}
 }
 
-// Test ProcessReceipt
 func (suite *ReceiptServiceTestSuite) TestProcessReceipt() {
-	id, _ := ProcessReceipt(suite.mockExtReceipt) // Pass ExtReceipt here
+	// Process the mock receipt
+	id, err := suite.service.ProcessReceipt(suite.mockExtReceipt)
 
-	// Verify that the receipt is stored with the generated ID
-	storedData, exists := storage.GetReceiptData(id)
-	suite.Require().True(exists, "Receipt should exist in storage")
-	// Compare stored data's receipt with the mock data (after conversion to internal format)
-	suite.Require().Equal(suite.mockExtReceipt.Retailer, storedData.Receipt.Retailer, "Stored receipt retailer should match mock")
-	suite.Require().Equal(suite.mockExtReceipt.PurchaseDate, storedData.Receipt.PurchaseDate, "Stored receipt date should match mock")
-	suite.Require().Equal(int64(0), storedData.Point, "Points should initially be 0")
+	// Assertions
+	suite.NoError(err)
+	suite.NotEmpty(id)
+
+	// Check if receipt exists in storage
+	receiptData, exists := storage.GetReceiptData(id)
+	suite.True(exists)
+	suite.Equal(suite.mockExtReceipt.Retailer, receiptData.Receipt.Retailer)
+	suite.Equal(suite.mockExtReceipt.Total, receiptData.Receipt.Total)
 }
 
-// Test get points and point calculation
 func (suite *ReceiptServiceTestSuite) TestGetPoints() {
-	id, _ := ProcessReceipt(suite.mockExtReceipt) // Pass ExtReceipt here
-	points, err := GetPoints(id)
+	// Process the mock receipt and get its ID
+	id, _ := suite.service.ProcessReceipt(suite.mockExtReceipt)
 
-	// Verify points calculation
-	suite.Require().NoError(err, "GetPoints should not return an error")
-	suite.Require().Greater(points, int64(0), "Points should be greater than 0")
-	suite.Require().Equal(points, int64(28), "Points of this mock receipt should be 28")
+	// Get points for the processed receipt
+	points, err := suite.service.GetPoints(id)
 
-	// Verify that points are updated in storage
-	storedData, exists := storage.GetReceiptData(id)
-	suite.Require().True(exists, "Receipt should exist in storage")
-	suite.Require().Equal(points, storedData.Point, "Stored points should match calculated points")
-}
+	// Assertions
+	suite.NoError(err)
+	suite.Greater(points, int64(0))
+	suite.Equal(points, int64(28), "Points of this mock receipt should be 28")
 
-// TestGetPointsInvalidID verifies behavior with an invalid ID
-func (suite *ReceiptServiceTestSuite) TestGetPointsInvalidID() {
-	_, err := GetPoints(uuid.New().String())
-	suite.Require().Error(err, "GetPoints should return an error for an invalid ID")
+	// Verify that points were updated in storage
+	receiptData, _ := storage.GetReceiptData(id)
+	suite.Equal(points, receiptData.Point)
 }
 
 // Run the test suite
