@@ -9,6 +9,11 @@ This is a backend service written in Go which processes receipt awards points. I
 1. **Process Receipt**: Submits a receipt for processing and returns an ID.
 2. **Get Points**: Retrieves the points awarded for a given receipt ID.
 
+## Requirement
+You will need either one to run the application.
+1. Go version 1.18 +
+2. Docker version  20.10.11
+
 ---
 ## Build and Run
 ### Using Go
@@ -50,10 +55,14 @@ Once the docker container is running, you can access it at http://localhost:8080
 
 ---
 ## Unit Tests
-There is one unit test for services that can be run by sending the following command in your project terminal.
+There are two unit test for handler and services that can be run by sending the following command in your project terminal.
 
 ```bash
-go test ./services
+go test ./public/v1/receipt_handler   
+```
+
+```bash
+go test ./services/receipts_service    
 ```
 
 ---
