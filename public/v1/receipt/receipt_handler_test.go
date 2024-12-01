@@ -1,4 +1,4 @@
-package receipt_handler
+package receipt
 
 import (
 	"bytes"

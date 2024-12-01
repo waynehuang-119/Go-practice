@@ -1,4 +1,4 @@
-package receipt_handler
+package receipt
 
 type ExtProcessReceiptResponse struct {
 	ID string `json:"id"`

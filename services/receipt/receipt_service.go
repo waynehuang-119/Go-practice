@@ -1,4 +1,4 @@
-package services
+package receipt
 
 import (
 	"fmt"
@@ -26,6 +26,9 @@ func NewReceiptService() ReceiptService {
 // Stores a receipt, generates an ID, process points and returns the ID
 func (r *receiptServiceImpl) ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
 	var id string
+
+	// Generate unique ID
+	id = uuid.New().String()
 
 	// Generate unique ID
 	for {
@@ -57,6 +60,8 @@ func (r *receiptServiceImpl) ProcessReceipt(extReceipt models.ExtReceipt) (strin
 
 	// Create ReceiptData and save to storage
 	receiptData := storage.ReceiptData{Receipt: internalReceipt, Point: 0}
+
+	// Calculate points when processing a new receipt
 	receiptData.Point = calculatePoints(receiptData.Receipt)
 	storage.UpdateReceiptData(id, receiptData)
 	return id, nil
@@ -67,12 +72,6 @@ func (r *receiptServiceImpl) GetPoints(id string) (int64, error) {
 	receiptData, exists := storage.GetReceiptData(id)
 	if !exists {
 		return 0, fmt.Errorf("receipt with id %s does not exist", id)
-	}
-
-	// If points are 0, calculate and update them
-	if receiptData.Point == 0 {
-		receiptData.Point = calculatePoints(receiptData.Receipt)
-		storage.UpdateReceiptData(id, receiptData)
 	}
 
 	return receiptData.Point, nil

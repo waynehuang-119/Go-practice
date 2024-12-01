@@ -1,17 +1,17 @@
-package receipt_handler
+package receipt
 
 import (
 	"net/http"
 	"receipt-processor/models"
-	service "receipt-processor/services/receipts_service"
+	receiptSvc "receipt-processor/services/receipt"
 
 	"github.com/gin-gonic/gin"
 )
 
-var receiptService service.ReceiptService
+var receiptService receiptSvc.ReceiptService
 
 // Register router for the APIs
-func Register(router *gin.Engine, service service.ReceiptService) {
+func Register(router *gin.Engine, service receiptSvc.ReceiptService) {
 	receiptService = service
 
 	// Define API routes

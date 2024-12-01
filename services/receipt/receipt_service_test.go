@@ -1,4 +1,4 @@
-package services
+package receipt
 
 import (
 	"receipt-processor/models"

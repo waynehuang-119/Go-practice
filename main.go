@@ -5,8 +5,8 @@ package main
 
 import (
 	"fmt"
-	receipt_handler "receipt-processor/public/v1/receipt_handler"
-	service "receipt-processor/services/receipts_service"
+	receipt_handler "receipt-processor/public/v1/receipt"
+	receiptSvc "receipt-processor/services/receipt"
 
 	"github.com/gin-gonic/gin"
 )
@@ -16,7 +16,7 @@ func main() {
 	router := gin.Default()
 
 	// Create an instance of the ReceiptService
-	receiptService := service.NewReceiptService()
+	receiptService := receiptSvc.NewReceiptService()
 
 	// Set up routes
 	receipt_handler.Register(router, receiptService)
