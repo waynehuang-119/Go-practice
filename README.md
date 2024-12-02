@@ -76,7 +76,7 @@ go test ./smoke
 
 ---
 ## API Documentation
-### (Optional) Swagger API Docs
+### Swagger API Docs
 After starting the application, visit link below to see interactive API documentation build by [swagger](https://github.com/swaggo/gin-swagger)<br />
 http://localhost:8080/docs/index.html
 
