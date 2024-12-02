@@ -54,19 +54,32 @@ Once the docker container is running, you can access it at http://localhost:8080
 
 
 ---
-## Unit Tests
-There are two unit test for handler and services that can be run by sending the following command in your project terminal.
+## Tests
+There are two unit tests for handler and services and one smoke test for entire application.
 
+1. Handler unit test
 ```bash
 go test ./public/v1/receipt_handler   
 ```
 
+2. Services unit test
 ```bash
 go test ./services/receipts_service    
 ```
 
+3. Smoke test
+Note: make sure to start the application before running smoke test.
+
+```bash
+go test ./smoke 
+```
+
 ---
 ## API Documentation
+### (Optional) Swagger API Docs
+After starting the application, visit link below to see interactive API documentation build by [swagger](https://github.com/swaggo/gin-swagger)
+http://localhost:8080/docs/index.html
+
 ### 1. Process Receipt
 - **URL:** `/receipts/process`
 - **Method:** `POST`
@@ -166,5 +179,6 @@ Include the targeted receipt 'id' as parameter in the API endpoint.
 | ----------- | ----------- |
 | 200 | Points retrieved successfully. |
 | 404 | Receipt ID not found. |
+| 500 | Internal server error. |
 
 
