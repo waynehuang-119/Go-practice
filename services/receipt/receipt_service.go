@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 	"receipt-processor/models"
-	"receipt-processor/storage"
+	"receipt-processor/repo"
 	"regexp"
 	"strconv"
 	"strings"
@@ -25,20 +25,8 @@ func NewReceiptService() ReceiptService {
 
 // Stores a receipt, generates an ID, process points and returns the ID
 func (r *receiptServiceImpl) ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
-	var id string
-
 	// Generate unique ID
-	id = uuid.New().String()
-
-	// Generate unique ID
-	for {
-		id = uuid.New().String()
-
-		// Check if the ID exists in storage
-		if _, exists := storage.Receipts[id]; !exists {
-			break // ID is unique, exit the loop
-		}
-	}
+	id := uuid.New().String()
 
 	// Convert external receipt to internal receipt
 	var items []models.Item
@@ -58,20 +46,25 @@ func (r *receiptServiceImpl) ProcessReceipt(extReceipt models.ExtReceipt) (strin
 		Total:        extReceipt.Total,
 	}
 
-	// Create ReceiptData and save to storage
-	receiptData := storage.ReceiptData{Receipt: internalReceipt, Point: 0}
+	// Create ReceiptData and save to repo
+	receiptData := repo.ReceiptData{Receipt: internalReceipt, Point: 0}
 
 	// Calculate points when processing a new receipt
 	receiptData.Point = calculatePoints(receiptData.Receipt)
-	storage.UpdateReceiptData(id, receiptData)
+	repo.UpdateReceiptData(id, receiptData)
 	return id, nil
 }
 
-// Get points for a given receipt ID, calculating them if 0
+// Get points for a given receipt ID
 func (r *receiptServiceImpl) GetPoints(id string) (int64, error) {
-	receiptData, exists := storage.GetReceiptData(id)
-	if !exists {
-		return 0, fmt.Errorf("receipt with id %s does not exist", id)
+	receiptData, err := repo.GetReceiptData(id)
+	if err != nil {
+		// Handle the specific error (e.g., receipt not found)
+		if err == repo.ErrNotFound {
+			return 0, fmt.Errorf("receipt with id %s does not exist: %w", id, err)
+		}
+		// Handle other potential errors (if any)
+		return 0, fmt.Errorf("failed to retrieve receipt with id %s: %w", id, err)
 	}
 
 	return receiptData.Point, nil

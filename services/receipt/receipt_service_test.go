@@ -2,7 +2,7 @@ package receipt
 
 import (
 	"receipt-processor/models"
-	"receipt-processor/storage"
+	"receipt-processor/repo"
 	"testing"
 
 	"github.com/stretchr/testify/suite"
@@ -18,7 +18,7 @@ type ReceiptServiceTestSuite struct {
 // SetupTest initializes the suite
 func (suite *ReceiptServiceTestSuite) SetupTest() {
 	// Reset the storage before each test
-	storage.Receipts = make(map[string]storage.ReceiptData)
+	repo.Receipts = make(map[string]repo.ReceiptData)
 
 	// Initialize the ReceiptService
 	suite.service = NewReceiptService()
@@ -43,13 +43,13 @@ func (suite *ReceiptServiceTestSuite) TestProcessReceipt() {
 	// Process the mock receipt
 	id, err := suite.service.ProcessReceipt(suite.mockExtReceipt)
 
-	// Assertions
+	// Assertions for receipt processing
 	suite.NoError(err)
 	suite.NotEmpty(id)
 
 	// Check if receipt exists in storage
-	receiptData, exists := storage.GetReceiptData(id)
-	suite.True(exists)
+	receiptData, err := repo.GetReceiptData(id)
+	suite.NoError(err) // Ensure no error is returned
 	suite.Equal(suite.mockExtReceipt.Retailer, receiptData.Receipt.Retailer)
 	suite.Equal(suite.mockExtReceipt.Total, receiptData.Receipt.Total)
 }
@@ -67,7 +67,7 @@ func (suite *ReceiptServiceTestSuite) TestGetPoints() {
 	suite.Equal(points, int64(28), "Points of this mock receipt should be 28")
 
 	// Verify that points were updated in storage
-	receiptData, _ := storage.GetReceiptData(id)
+	receiptData, _ := repo.GetReceiptData(id)
 	suite.Equal(points, receiptData.Point)
 }
 

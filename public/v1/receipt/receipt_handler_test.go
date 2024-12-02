@@ -7,7 +7,7 @@ import (
 	"net/http"
 	"net/http/httptest"
 	"receipt-processor/models"
-	"receipt-processor/storage"
+	"receipt-processor/repo"
 	"testing"
 
 	"github.com/gin-gonic/gin"
@@ -41,7 +41,7 @@ type ReceiptHandlerTestSuite struct {
 // SetupTest initializes the suite
 func (suite *ReceiptHandlerTestSuite) SetupTest() {
 	// Reset the storage
-	storage.Receipts = make(map[string]storage.ReceiptData)
+	repo.Receipts = make(map[string]repo.ReceiptData)
 
 	// Initialize the mock service
 	suite.mockService = new(MockReceiptService)
