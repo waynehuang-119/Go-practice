@@ -67,7 +67,7 @@ go test ./public/v1/receipt_handler
 go test ./services/receipts_service    
 ```
 
-3. Smoke test
+3. Smoke test<br />
 Note: make sure to start the application before running smoke test.
 
 ```bash
@@ -77,7 +77,7 @@ go test ./smoke
 ---
 ## API Documentation
 ### (Optional) Swagger API Docs
-After starting the application, visit link below to see interactive API documentation build by [swagger](https://github.com/swaggo/gin-swagger)
+After starting the application, visit link below to see interactive API documentation build by [swagger](https://github.com/swaggo/gin-swagger)<br />
 http://localhost:8080/docs/index.html
 
 ### 1. Process Receipt
