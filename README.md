@@ -68,7 +68,7 @@ go test ./services/receipts_service
 ```
 
 3. Smoke test<br />
-Note: make sure to start the application before running smoke test.
+(Note: make sure to start the application before running smoke test.)
 
 ```bash
 go test ./smoke 
