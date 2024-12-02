@@ -5,12 +5,18 @@ package main
 
 import (
 	"fmt"
+	_ "receipt-processor/docs"
 	receipt_handler "receipt-processor/public/v1/receipt"
 	receiptSvc "receipt-processor/services/receipt"
 
 	"github.com/gin-gonic/gin"
 )
 
+// @title Receipt Processor API
+// @version 1.0
+// @description This is a backend service written in Go using Gin framework which processes receipt awards points.
+
+// @host localhost:8080/
 func main() {
 	// Create a Gin router
 	router := gin.Default()

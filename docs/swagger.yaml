@@ -1,0 +1,116 @@
+definitions:
+  models.ExtReceipt:
+    properties:
+      items:
+        items:
+          $ref: '#/definitions/models.Item'
+        type: array
+      purchaseDate:
+        type: string
+      purchaseTime:
+        type: string
+      retailer:
+        type: string
+      total:
+        type: string
+    required:
+    - items
+    - purchaseDate
+    - purchaseTime
+    - retailer
+    - total
+    type: object
+  models.Item:
+    properties:
+      price:
+        type: string
+      shortDescription:
+        type: string
+    required:
+    - price
+    - shortDescription
+    type: object
+  receipt.ErrorResponse:
+    properties:
+      error:
+        type: string
+    type: object
+  receipt.ExtGetPointsResponse:
+    properties:
+      points:
+        type: integer
+    type: object
+  receipt.ExtProcessReceiptResponse:
+    properties:
+      id:
+        type: string
+    type: object
+host: localhost:8080/
+info:
+  contact: {}
+  description: This is a backend service written in Go using Gin framework which processes
+    receipt awards points.
+  title: Receipt Processor API
+  version: "1.0"
+paths:
+  /receipts/{id}/points:
+    get:
+      consumes:
+      - application/json
+      description: Fetches the points linked to a receipt using its unique ID.
+      parameters:
+      - description: Receipt ID
+        in: path
+        name: id
+        required: true
+        type: string
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Points retrieved successfully
+          schema:
+            $ref: '#/definitions/receipt.ExtGetPointsResponse'
+        "404":
+          description: Receipt not found
+          schema:
+            $ref: '#/definitions/receipt.ErrorResponse'
+        "500":
+          description: Internal server error
+          schema:
+            $ref: '#/definitions/receipt.ErrorResponse'
+      summary: Retrieves points associated with a receipt by ID
+      tags:
+      - receipts
+  /receipts/process:
+    post:
+      consumes:
+      - application/json
+      description: Receives a receipt in JSON format and processes it, returning a
+        unique ID for the receipt.
+      parameters:
+      - description: Receipt data
+        in: body
+        name: receipt
+        required: true
+        schema:
+          $ref: '#/definitions/models.ExtReceipt'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: Receipt processed successfully
+          schema:
+            $ref: '#/definitions/receipt.ExtProcessReceiptResponse'
+        "400":
+          description: Invalid request body
+          schema:
+            $ref: '#/definitions/receipt.ErrorResponse'
+        "500":
+          description: Error processing receipt
+          schema:
+            $ref: '#/definitions/receipt.ErrorResponse'
+      summary: Submits a receipt for processing and returns an ID
+      tags:
+      - receipts
+swagger: "2.0"
