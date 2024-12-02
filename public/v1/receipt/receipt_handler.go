@@ -7,6 +7,7 @@ import (
 	"receipt-processor/repo"
 	receiptSvc "receipt-processor/services/receipt"
 
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	swaggerFiles "github.com/swaggo/files"
 	ginSwagger "github.com/swaggo/gin-swagger"
@@ -21,6 +22,7 @@ type ErrorResponse struct {
 // Register router for the APIs
 func Register(router *gin.Engine, service receiptSvc.ReceiptService) {
 	receiptService = service
+	router.Use(cors.Default())
 
 	// Swagger for API docs
 	router.GET("/docs/*any", ginSwagger.WrapHandler(swaggerFiles.Handler))
