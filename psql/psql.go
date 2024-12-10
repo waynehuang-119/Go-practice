@@ -28,19 +28,19 @@ func InitDB() error {
 	if err = createReceiptTable(db); err != nil {
 		// Close the connection if table creation fails
 		db.Close()
-		return fmt.Errorf("error creating Receipt table: %v", err)
+		return fmt.Errorf("error creating receipt table: %v", err)
 	}
 
 	// Create Item table
 	if err = createItemTable(db); err != nil {
 		db.Close()
-		return fmt.Errorf("error creating Item table: %v", err)
+		return fmt.Errorf("error creating item table: %v", err)
 	}
 
 	// Create ReceiptItem table
 	if err = createReceiptItemTable(db); err != nil {
 		db.Close()
-		return fmt.Errorf("error creating Receipt_Item table: %v", err)
+		return fmt.Errorf("error creating receipt_item table: %v", err)
 	}
 
 	log.Println("Successfully connected to PostgreSQL and created Tables!")
@@ -57,13 +57,13 @@ func CloseDB() {
 }
 
 func createReceiptTable(db *sql.DB) error {
-	query := `CREATE TABLE IF NOT EXISTS Receipt (
+	query := `CREATE TABLE IF NOT EXISTS receipt (
 		id UUID PRIMARY KEY,
 		retailer TEXT NOT NULL,
 		purchaseDate TEXT NOT NULL,
 		purchaseTime TEXT NOT NULL,
 		total TEXT NOT NULL,
-		point INT NOT NULL,
+		points INT NOT NULL,
 		created_at TIMESTAMP DEFAULT NOW(),
     	updated_at TIMESTAMP DEFAULT NOW()
 		)
@@ -71,13 +71,13 @@ func createReceiptTable(db *sql.DB) error {
 	_, err := db.Exec(query)
 
 	if err != nil {
-		return fmt.Errorf("error creating Receipt table: %v", err)
+		return fmt.Errorf("error creating receipt table: %v", err)
 	}
 	return nil
 }
 
 func createItemTable(db *sql.DB) error {
-	query := `CREATE TABLE IF NOT EXISTS Item (
+	query := `CREATE TABLE IF NOT EXISTS item (
 		id SERIAL PRIMARY KEY,
 		shortDescription TEXT,
 		price TEXT
@@ -87,13 +87,13 @@ func createItemTable(db *sql.DB) error {
 	_, err := db.Exec(query)
 
 	if err != nil {
-		return fmt.Errorf("error creating Item table: %v", err)
+		return fmt.Errorf("error creating item table: %v", err)
 	}
 	return nil
 }
 
 func createReceiptItemTable(db *sql.DB) error {
-	query := `CREATE TABLE IF NOT EXISTS Receipt_Item (
+	query := `CREATE TABLE IF NOT EXISTS receipt_item (
 		receipt_id UUID REFERENCES Receipt(id) ON DELETE CASCADE,
     	item_id SERIAL REFERENCES Item(id) ON DELETE CASCADE,
     	PRIMARY KEY (receipt_id, item_id)
@@ -103,7 +103,7 @@ func createReceiptItemTable(db *sql.DB) error {
 	_, err := db.Exec(query)
 
 	if err != nil {
-		return fmt.Errorf("error creating Receipt_Item table: %v", err)
+		return fmt.Errorf("error creating receipt_item table: %v", err)
 	}
 
 	return nil
