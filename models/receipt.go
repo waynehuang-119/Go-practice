@@ -9,15 +9,15 @@ type ExtReceipt struct {
 	Total        string `json:"total" binding:"required"`
 }
 
-// Internal receipt structure used internally
-type Receipt struct {
-	ID           string
-	Retailer     string
-	PurchaseDate string
-	PurchaseTime string
-	Items        []Item
-	Total        string
-}
+// // Internal receipt structure used internally
+// type Receipt struct {
+// 	ID           string
+// 	Retailer     string
+// 	PurchaseDate string
+// 	PurchaseTime string
+// 	Items        []Item
+// 	Total        string
+// }
 
 // A single item purchased in a receipt
 type Item struct {

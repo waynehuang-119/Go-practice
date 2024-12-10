@@ -8,7 +8,7 @@ import (
 )
 
 type ReceiptData struct {
-	Receipt models.Receipt
+	Receipt models.ExtReceipt
 	Point   int64
 }
 

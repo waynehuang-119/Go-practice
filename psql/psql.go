@@ -10,6 +10,11 @@ import (
 
 var db *sql.DB
 
+// GetDB returns the database connection instance
+func GetDB() *sql.DB {
+	return db
+}
+
 // Open DB connection
 func InitDB() error {
 	var err error

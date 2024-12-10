@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"receipt-processor/models"
-	"receipt-processor/repo"
+	repo "receipt-processor/repo/psql"
 	receiptSvc "receipt-processor/services/receipt"
 
 	"github.com/gin-contrib/cors"
@@ -59,6 +59,7 @@ func ProcessReceipt(c *gin.Context) {
 
 	id, err := receiptService.ProcessReceipt(extReceipt)
 	if err != nil {
+		c.Error(err)
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "Error processing receipt"})
 		return
 	}
@@ -84,11 +85,13 @@ func GetPoints(c *gin.Context) {
 	points, err := receiptService.GetPoints(id)
 	if err != nil {
 		// Check if the error is a "not found" error
-		if errors.Is(err, repo.ErrNotFound) {
+		if errors.Is(err, repo.IdNotFound) {
+			c.Error(err)
 			c.JSON(http.StatusNotFound, ErrorResponse{Error: "Receipt not found"})
 			return
 		}
 		// Handle all other errors as internal server errors
+		c.Error(err)
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "Internal server error"})
 		return
 	}

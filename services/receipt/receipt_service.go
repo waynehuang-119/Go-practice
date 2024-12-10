@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"math"
 	"receipt-processor/models"
-	"receipt-processor/repo"
+	"receipt-processor/repo/psql"
 	"regexp"
 	"strconv"
 	"strings"
@@ -17,61 +17,44 @@ type ReceiptService interface {
 	GetPoints(id string) (int64, error)
 }
 
-type receiptServiceImpl struct{}
+type receiptServiceImpl struct {
+	repo psql.ReceiptRepository
+}
 
-func NewReceiptService() ReceiptService {
-	return &receiptServiceImpl{}
+func NewReceiptService(repo psql.ReceiptRepository) ReceiptService {
+	return &receiptServiceImpl{repo: repo}
 }
 
 // Stores a receipt, generates an ID, process points and returns the ID
-func (r *receiptServiceImpl) ProcessReceipt(extReceipt models.ExtReceipt) (string, error) {
+func (r *receiptServiceImpl) ProcessReceipt(receipt models.ExtReceipt) (string, error) {
 	// Generate unique ID
 	id := uuid.New().String()
 
-	// Convert external receipt to internal receipt
-	var items []models.Item
-	for _, extItem := range extReceipt.Items {
-		items = append(items, models.Item{
-			ShortDescription: extItem.ShortDescription,
-			Price:            extItem.Price,
-		})
+	// Calculate points
+	points := calculatePoints(receipt)
+
+	// update receipt to db
+	err := r.repo.UploadReceipt(receipt, id, points)
+	if err != nil {
+		return "", fmt.Errorf("repo layer - failed to upload receipt: %v", err)
 	}
 
-	internalReceipt := models.Receipt{
-		ID:           id,
-		Retailer:     extReceipt.Retailer,
-		PurchaseDate: extReceipt.PurchaseDate,
-		PurchaseTime: extReceipt.PurchaseTime,
-		Items:        items,
-		Total:        extReceipt.Total,
-	}
-
-	// Create ReceiptData and save to repo
-	receiptData := repo.ReceiptData{Receipt: internalReceipt, Point: 0}
-
-	// Calculate points when processing a new receipt
-	receiptData.Point = calculatePoints(receiptData.Receipt)
-	repo.UpdateReceiptData(id, receiptData)
 	return id, nil
 }
 
 // Get points for a given receipt ID
 func (r *receiptServiceImpl) GetPoints(id string) (int64, error) {
-	receiptData, err := repo.GetReceiptData(id)
+	points, err := r.repo.GetPoints(id)
+
 	if err != nil {
-		// Handle the specific error (e.g., receipt not found)
-		if err == repo.ErrNotFound {
-			return 0, fmt.Errorf("receipt with id %s does not exist: %w", id, err)
-		}
-		// Handle other potential errors (if any)
-		return 0, fmt.Errorf("failed to retrieve receipt with id %s: %w", id, err)
+		return 0, err
 	}
 
-	return receiptData.Point, nil
+	return points, nil
 }
 
 // Calculates points for a given receipt
-func calculatePoints(receipt models.Receipt) int64 {
+func calculatePoints(receipt models.ExtReceipt) int64 {
 	var points int64
 
 	// Rule 1: One point for every alphanumeric character in the retailer name.
