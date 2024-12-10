@@ -5,7 +5,9 @@ package main
 
 import (
 	"fmt"
+	"log"
 	_ "receipt-processor/docs"
+	"receipt-processor/psql"
 	receipt_handler "receipt-processor/public/v1/receipt"
 	receiptSvc "receipt-processor/services/receipt"
 
@@ -18,6 +20,12 @@ import (
 
 // @host localhost:8080/
 func main() {
+	err := psql.InitDB()
+	if err != nil {
+		log.Fatalf("Failed to connect to database: %v", err)
+	}
+	defer psql.CloseDB()
+
 	// Create a Gin router
 	router := gin.Default()
 
