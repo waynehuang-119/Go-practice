@@ -46,7 +46,7 @@ func (r *receiptServiceImpl) ProcessReceipt(receipt models.ExtReceipt) (string, 
 func (r *receiptServiceImpl) GetPoints(id string) (int64, error) {
 	points, err := r.repo.GetPoints(id)
 	if err != nil {
-		return 0, fmt.Errorf("error getting points: %v", err)
+		return 0, err
 	}
 
 	return points, nil

@@ -59,6 +59,7 @@ func ProcessReceipt(c *gin.Context) {
 
 	id, err := receiptService.ProcessReceipt(extReceipt)
 	if err != nil {
+		c.Error(err)
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "Error processing receipt"})
 		return
 	}
@@ -85,10 +86,12 @@ func GetPoints(c *gin.Context) {
 	if err != nil {
 		// Check if the error is a "not found" error
 		if errors.Is(err, repo.ErrNoRows) {
+			c.Error(err)
 			c.JSON(http.StatusNotFound, ErrorResponse{Error: "Receipt not found"})
 			return
 		}
 		// Handle all other errors as internal server errors
+		c.Error(err)
 		c.JSON(http.StatusInternalServerError, ErrorResponse{Error: "Internal server error"})
 		return
 	}

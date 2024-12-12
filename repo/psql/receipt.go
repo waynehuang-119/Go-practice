@@ -46,14 +46,14 @@ func (r receiptRepo) UploadReceipt(receipt models.ExtReceipt, id string, points 
 	}
 
 	// insert into item table
-	for description, price := range receipt.Items {
+	for _, item := range receipt.Items {
 		var itemId int
 		query = `INSERT INTO item (short_description, price)
 		VALUES ($1, $2)
 		RETURNING id
 		`
 
-		err := tx.QueryRow(query, description, price).Scan(&itemId)
+		err := tx.QueryRow(query, item.ShortDescription, item.Price).Scan(&itemId)
 
 		if err != nil {
 			return fmt.Errorf("failed to insert items into item table: %v", err)

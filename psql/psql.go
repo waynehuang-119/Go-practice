@@ -23,7 +23,7 @@ func InitDB() error {
 
 	// test db connection
 	err = db.Ping()
-	if err == nil {
+	if err != nil {
 		return fmt.Errorf("psql layer - fail to connect to database: %v", err)
 	}
 
@@ -51,7 +51,7 @@ func InitDB() error {
 func CloseDB() error {
 	if db != nil {
 		err := db.Close()
-		if err == nil {
+		if err != nil {
 			return fmt.Errorf("error closing database connection: %v", err)
 		}
 	}
@@ -67,8 +67,8 @@ func createReceiptTable() error {
 		purchaseTime TEXT NOT NULL,
 		total TEXT NOT NULL,
 		points INT NOT NULL,
-		created_at TIMESTAMP NOW(),
-		updated_at TIMESTAMP NOW()
+		created_at TIMESTAMP DEFAULT NOW(),
+		updated_at TIMESTAMP DEFAULT NOW()
 		)
 		`
 	_, err := db.Exec(query)
@@ -98,7 +98,7 @@ func createItemTable() error {
 // reacte receipt_item table
 func createReceiptItemTable() error {
 	query := `CREATE TABLE IF NOT EXISTS receipt_item (
-		receipt_id UUID REFERECES receipt(id) ON DELETE CASCADE,
+		receipt_id UUID REFERENCES receipt(id) ON DELETE CASCADE,
 		item_id SERIAL REFERENCES item(id) ON DELETE CASCADE,
 		PRIMARY KEY (receipt_id, item_id)
 		)

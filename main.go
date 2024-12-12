@@ -5,6 +5,7 @@ package main
 
 import (
 	"fmt"
+	"log"
 	_ "receipt-processor/docs"
 	"receipt-processor/psql"
 	receipt_handler "receipt-processor/public/v1/receipt"
@@ -23,6 +24,7 @@ import (
 func main() {
 	// Create a Gin router
 	router := gin.Default()
+	router.Use(errorHandler())
 
 	// connnect to DB
 	err := psql.InitDB()
@@ -47,5 +49,17 @@ func main() {
 	fmt.Printf("Server is running on port %s...\n", port)
 	if err := router.Run(port); err != nil {
 		panic(err)
+	}
+}
+
+func errorHandler() gin.HandlerFunc {
+	return func(c *gin.Context) {
+		c.Next()
+
+		if len(c.Errors) > 0 {
+			for _, e := range c.Errors {
+				log.Printf("Error: %v", e.Err)
+			}
+		}
 	}
 }
