@@ -6,10 +6,13 @@ package main
 import (
 	"fmt"
 	_ "receipt-processor/docs"
+	"receipt-processor/psql"
 	receipt_handler "receipt-processor/public/v1/receipt"
+	repo "receipt-processor/repo/psql"
 	receiptSvc "receipt-processor/services/receipt"
 
 	"github.com/gin-gonic/gin"
+	_ "github.com/lib/pq"
 )
 
 // @title Receipt Processor API
@@ -21,8 +24,20 @@ func main() {
 	// Create a Gin router
 	router := gin.Default()
 
+	// connnect to DB
+	err := psql.InitDB()
+	if err != nil {
+		panic(err)
+	}
+	defer psql.CloseDB()
+
+	db := psql.GetDB()
+
+	// create an instance of receiptRepo
+	receiptRepo := repo.New(db)
+
 	// Create an instance of the ReceiptService
-	receiptService := receiptSvc.NewReceiptService()
+	receiptService := receiptSvc.NewReceiptService(receiptRepo)
 
 	// Set up routes
 	receipt_handler.Register(router, receiptService)

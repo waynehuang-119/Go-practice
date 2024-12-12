@@ -4,7 +4,7 @@ import (
 	"errors"
 	"net/http"
 	"receipt-processor/models"
-	"receipt-processor/repo"
+	repo "receipt-processor/repo/psql"
 	receiptSvc "receipt-processor/services/receipt"
 
 	"github.com/gin-contrib/cors"
@@ -84,7 +84,7 @@ func GetPoints(c *gin.Context) {
 	points, err := receiptService.GetPoints(id)
 	if err != nil {
 		// Check if the error is a "not found" error
-		if errors.Is(err, repo.ErrNotFound) {
+		if errors.Is(err, repo.ErrNoRows) {
 			c.JSON(http.StatusNotFound, ErrorResponse{Error: "Receipt not found"})
 			return
 		}
